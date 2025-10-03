@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Confetti from 'react-confetti';
+import useWindowSize from '@/hooks/useWindowSize';
 
 interface TimeLeft {
   days: number;
@@ -11,6 +13,9 @@ interface TimeLeft {
 const CountdownTimer = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isBirthday, setIsBirthday] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -26,6 +31,10 @@ const CountdownTimer = () => {
 
       if (difference <= 0) {
         setIsBirthday(true);
+        setShowConfetti(true);
+        if (audioRef.current) {
+          audioRef.current.play().catch(() => {});
+        }
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
 
@@ -50,15 +59,46 @@ const CountdownTimer = () => {
 
   if (isBirthday) {
     return (
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        className="text-center"
-      >
-        <h2 className="text-5xl md:text-7xl font-bold text-golden-orange animate-pulse-glow font-heading">
-          🎉 С Днем Рождения, Мама! 🎉
-        </h2>
-      </motion.div>
+      <>
+        {showConfetti && <Confetti width={width} height={height} numberOfPieces={500} recycle={true} />}
+        <audio ref={audioRef} src="/birthday.mp3" loop />
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="text-center relative z-10"
+        >
+          <motion.h2 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              textShadow: [
+                '0 0 20px #F59E0B',
+                '0 0 40px #F59E0B, 0 0 60px #F59E0B',
+                '0 0 20px #F59E0B',
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-5xl md:text-7xl font-bold text-golden-orange font-heading mb-4"
+          >
+            🎉 С Днем Рождения, Мама! 🎉
+          </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-2xl md:text-4xl text-white font-body mt-6"
+          >
+            🎂 Оксана, ты самая лучшая! 💝
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="mt-8 text-cyan-blue text-lg md:text-xl font-body"
+          >
+            Исследуй миры, чтобы найти все сюрпризы! ✨
+          </motion.div>
+        </motion.div>
+      </>
     );
   }
 

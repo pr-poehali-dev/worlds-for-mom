@@ -1,19 +1,71 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import CountdownTimer from '@/components/CountdownTimer';
 import BiomeSelector from '@/components/BiomeSelector';
 import ParticleBackground from '@/components/ParticleBackground';
+import BiomeJungle from '@/components/BiomeJungle';
+import BiomeAntarctica from '@/components/BiomeAntarctica';
+import BiomeSpace from '@/components/BiomeSpace';
+import AudioPlayer from '@/components/AudioPlayer';
+import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [mounted, setMounted] = useState(false);
+  const [currentBiome, setCurrentBiome] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const handleBiomeSelect = (biomeId: string) => {
+    setCurrentBiome(biomeId);
+  };
+
+  const handleBackToMain = () => {
+    setCurrentBiome(null);
+  };
+
+  if (currentBiome === 'jungle') {
+    return (
+      <>
+        <BiomeJungle onBack={handleBackToMain} />
+        <AudioPlayer biome="jungle" />
+      </>
+    );
+  }
+
+  if (currentBiome === 'antarctica') {
+    return (
+      <>
+        <BiomeAntarctica onBack={handleBackToMain} />
+        <AudioPlayer biome="antarctica" />
+      </>
+    );
+  }
+
+  if (currentBiome === 'space') {
+    return (
+      <>
+        <BiomeSpace onBack={handleBackToMain} />
+        <AudioPlayer biome="space" />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-space-black overflow-hidden relative">
       <ParticleBackground />
+      <AudioPlayer biome="main" />
+      
+      <button
+        onClick={() => navigate('/memory-map')}
+        className="absolute top-6 right-6 z-20 px-6 py-3 bg-neon-purple/80 backdrop-blur-md text-white rounded-full hover:bg-neon-purple transition-all flex items-center gap-2 font-body border border-neon-purple/30"
+      >
+        <Icon name="Map" size={20} />
+        Карта воспоминаний
+      </button>
       
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
         <motion.div
@@ -38,7 +90,7 @@ const Index = () => {
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           className="mt-16 w-full"
         >
-          <BiomeSelector />
+          <BiomeSelector onBiomeSelect={handleBiomeSelect} />
         </motion.div>
       </div>
     </div>

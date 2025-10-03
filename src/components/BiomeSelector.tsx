@@ -38,11 +38,13 @@ const biomes: Biome[] = [
   },
 ];
 
-const BiomeSelector = () => {
+const BiomeSelector = ({ onBiomeSelect }: { onBiomeSelect?: (biomeId: string) => void }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const handleBiomeClick = (biomeId: string) => {
-    console.log(`Переход в биом: ${biomeId}`);
+    if (onBiomeSelect) {
+      onBiomeSelect(biomeId);
+    }
   };
 
   return (
