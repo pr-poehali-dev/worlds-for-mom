@@ -59,7 +59,14 @@ const Index = () => {
       <ParticleBackground />
       <AudioPlayer biome="main" />
       
-      <div className="absolute top-6 right-6 z-20 flex gap-3">
+      <div className="absolute top-6 right-6 z-20 flex gap-3 flex-wrap justify-end">
+        <button
+          onClick={() => navigate('/diary')}
+          className="px-6 py-3 bg-pink-600/80 backdrop-blur-md text-white rounded-full hover:bg-pink-500 transition-all flex items-center gap-2 font-body border border-pink-400/30"
+        >
+          <Icon name="BookOpen" size={20} />
+          <span className="hidden md:inline">Дневник</span>
+        </button>
         <button
           onClick={() => navigate('/memory-map')}
           className="px-6 py-3 bg-neon-purple/80 backdrop-blur-md text-white rounded-full hover:bg-neon-purple transition-all flex items-center gap-2 font-body border border-neon-purple/30"
