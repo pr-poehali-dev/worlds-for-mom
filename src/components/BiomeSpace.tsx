@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, Text } from '@react-three/drei';
+import { OrbitControls, Text, Torus } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import Icon from '@/components/ui/icon';
@@ -10,104 +10,301 @@ interface InteractiveObject {
   position: [number, number, number];
   message: string;
   icon: string;
-  color: string;
-  size?: number;
+  type: 'earth' | 'sun' | 'moon' | 'star' | 'satellite' | 'rocket' | 'nebula';
 }
 
 const objects: InteractiveObject[] = [
-  { id: '1', position: [0, 0, 0], message: 'На этой прекрасной планете я встретил самого дорогого человека - тебя, мама!', icon: '🌍', color: '#1E90FF', size: 2 },
-  { id: '2', position: [8, 2, -5], message: 'Ты - мое солнце, которое всегда согревает меня своим теплом!', icon: '☀️', color: '#FFD700', size: 1.5 },
-  { id: '3', position: [-4, 1, 3], message: 'Как луна отражает свет солнца, я стараюсь отражать твою доброту!', icon: '🌙', color: '#C0C0C0', size: 1 },
-  { id: '4', position: [3, -3, 2], message: 'Загадай желание! Я сделаю все, чтобы оно сбылось!', icon: '⭐', color: '#FFFFE0', size: 0.6 },
-  { id: '5', position: [-3, 3, -2], message: 'Как спутник следует за планетой, я всегда буду рядом с тобой!', icon: '🛰️', color: '#708090', size: 0.5 },
-  { id: '6', position: [5, -2, 4], message: 'Ты дала мне крылья, чтобы лететь к самым смелым мечтам!', icon: '🚀', color: '#FF6347', size: 0.7 },
-  { id: '7', position: [-5, -1, -3], message: 'Ты - мой надежный ориентир в жизни, как это созвездие для мореплавателей!', icon: '✨', color: '#E6E6FA', size: 0.5 },
+  { id: '1', position: [0, 0, 0], message: 'На этой прекрасной планете я встретил самого дорогого человека - тебя, мама!', icon: '🌍', type: 'earth' },
+  { id: '2', position: [8, 2, -5], message: 'Ты - мое солнце, которое всегда согревает меня своим теплом!', icon: '☀️', type: 'sun' },
+  { id: '3', position: [-4, 1, 3], message: 'Как луна отражает свет солнца, я стараюсь отражать твою доброту!', icon: '🌙', type: 'moon' },
+  { id: '4', position: [3, -3, 2], message: 'Загадай желание! Я сделаю все, чтобы оно сбылось!', icon: '⭐', type: 'star' },
+  { id: '5', position: [-3, 3, -2], message: 'Как спутник следует за планетой, я всегда буду рядом с тобой!', icon: '🛰️', type: 'satellite' },
+  { id: '6', position: [5, -2, 4], message: 'Ты дала мне крылья, чтобы лететь к самым смелым мечтам!', icon: '🚀', type: 'rocket' },
+  { id: '7', position: [-5, -1, -3], message: 'Ты - мой надежный ориентир в жизни, как это созвездие для мореплавателей!', icon: '✨', type: 'nebula' },
 ];
 
-function Star({ position }: { position: [number, number, number] }) {
+function Earth({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
-
+  
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.001;
+      meshRef.current.rotation.y += 0.005;
     }
   });
 
   return (
-    <Sphere ref={meshRef} args={[0.05, 8, 8]} position={position}>
-      <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={Math.random()} />
-    </Sphere>
+    <group position={position} onClick={onClick} scale={hovered ? 1.3 : 1}>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1.2, 64, 64]} />
+        <meshStandardMaterial color="#1e90ff" roughness={0.5} metalness={0.3} />
+      </mesh>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1.21, 64, 64]} />
+        <meshStandardMaterial color="#10b981" transparent opacity={0.3} roughness={0.8} />
+      </mesh>
+      <mesh position={[0, 0, 1.3]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color="#ffffff" />
+      </mesh>
+    </group>
   );
 }
 
-function Planet({ obj, onClick }: { obj: InteractiveObject; onClick: () => void }) {
+function Sun({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
-
-  useFrame((state) => {
+  
+  useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.005;
-      if (obj.id !== '1') {
-        const angle = state.clock.elapsedTime * 0.1 * parseFloat(obj.id);
-        meshRef.current.position.x = obj.position[0] + Math.cos(angle) * 0.5;
-        meshRef.current.position.z = obj.position[2] + Math.sin(angle) * 0.5;
-      }
+      meshRef.current.rotation.y += 0.01;
     }
   });
 
   return (
-    <group position={obj.position}>
-      <Sphere
-        ref={meshRef}
-        args={[obj.size || 0.5, 32, 32]}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        scale={hovered ? 1.2 : 1}
-      >
-        <meshStandardMaterial 
-          color={obj.color} 
-          emissive={obj.color} 
-          emissiveIntensity={hovered ? 0.6 : 0.3}
-        />
-      </Sphere>
-      <Text position={[0, (obj.size || 0.5) + 0.8, 0]} fontSize={0.6} color="white">
-        {obj.icon}
-      </Text>
+    <group position={position} onClick={onClick} scale={hovered ? 1.3 : 1}>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} />
+      </mesh>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1.1, 32, 32]} />
+        <meshStandardMaterial color="#ff8c00" transparent opacity={0.3} emissive="#ff8c00" emissiveIntensity={0.8} />
+      </mesh>
+      <pointLight position={[0, 0, 0]} intensity={2} color="#ffd700" distance={10} />
+    </group>
+  );
+}
+
+function Moon({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.003;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={position} onClick={onClick} scale={hovered ? 1.4 : 1}>
+      <sphereGeometry args={[0.6, 32, 32]} />
+      <meshStandardMaterial color="#c0c0c0" roughness={0.9} metalness={0.1} />
+    </mesh>
+  );
+}
+
+function Star({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.02;
+      groupRef.current.rotation.x += 0.01;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} onClick={onClick} scale={hovered ? 1.5 : 1}>
+      <mesh>
+        <octahedronGeometry args={[0.4, 0]} />
+        <meshStandardMaterial color="#ffffe0" emissive="#ffffe0" emissiveIntensity={2} />
+      </mesh>
+      {[0, 1, 2, 3].map((i) => (
+        <mesh key={i} rotation={[0, (Math.PI * i) / 2, 0]} position={[0.3, 0, 0]}>
+          <coneGeometry args={[0.05, 0.3, 4]} />
+          <meshStandardMaterial color="#ffffe0" emissive="#ffffe0" emissiveIntensity={1} />
+        </mesh>
+      ))}
+      <pointLight position={[0, 0, 0]} intensity={1.5} color="#ffffe0" distance={3} />
+    </group>
+  );
+}
+
+function Satellite({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.01;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} onClick={onClick} scale={hovered ? 1.4 : 1}>
+      <mesh>
+        <boxGeometry args={[0.3, 0.3, 0.3]} />
+        <meshStandardMaterial color="#708090" metalness={0.9} roughness={0.1} />
+      </mesh>
+      <mesh position={[-0.4, 0, 0]}>
+        <boxGeometry args={[0.3, 0.6, 0.05]} />
+        <meshStandardMaterial color="#1e3a8a" metalness={0.5} />
+      </mesh>
+      <mesh position={[0.4, 0, 0]}>
+        <boxGeometry args={[0.3, 0.6, 0.05]} />
+        <meshStandardMaterial color="#1e3a8a" metalness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.2, 0]}>
+        <cylinderGeometry args={[0.05, 0.05, 0.3, 8]} />
+        <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={0.5} />
+      </mesh>
+    </group>
+  );
+}
+
+function Rocket({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.2;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} onClick={onClick} scale={hovered ? 1.4 : 1} rotation={[Math.PI * 0.3, 0, 0]}>
+      <mesh position={[0, 0.5, 0]}>
+        <coneGeometry args={[0.15, 0.3, 8]} />
+        <meshStandardMaterial color="#ff0000" metalness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.2, 0]}>
+        <cylinderGeometry args={[0.15, 0.15, 0.6, 8]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.2} />
+      </mesh>
+      <mesh position={[-0.12, -0.1, 0]}>
+        <boxGeometry args={[0.08, 0.3, 0.05]} />
+        <meshStandardMaterial color="#1e3a8a" />
+      </mesh>
+      <mesh position={[0.12, -0.1, 0]}>
+        <boxGeometry args={[0.08, 0.3, 0.05]} />
+        <meshStandardMaterial color="#1e3a8a" />
+      </mesh>
+      <mesh position={[0, -0.3, 0]}>
+        <coneGeometry args={[0.08, 0.2, 8]} />
+        <meshStandardMaterial color="#ff8c00" emissive="#ff8c00" emissiveIntensity={1} />
+      </mesh>
+      <pointLight position={[0, -0.4, 0]} intensity={1} color="#ff8c00" distance={2} />
+    </group>
+  );
+}
+
+function Nebula({ position, onClick, hovered }: { position: [number, number, number]; onClick: () => void; hovered: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.002;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} onClick={onClick} scale={hovered ? 1.3 : 1}>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <mesh key={i} position={[Math.cos(i * 1.26) * 0.5, Math.sin(i * 1.26) * 0.5, 0]}>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshStandardMaterial 
+            color={i % 2 === 0 ? "#e6e6fa" : "#dda0dd"} 
+            emissive={i % 2 === 0 ? "#e6e6fa" : "#dda0dd"} 
+            emissiveIntensity={0.8}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function InteractiveObject({ obj, onClick }: { obj: InteractiveObject; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+
+  const handlePointerOver = () => setHovered(true);
+  const handlePointerOut = () => setHovered(false);
+
+  const props = {
+    position: obj.position,
+    onClick,
+    hovered,
+  };
+
+  return (
+    <group onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}>
+      {obj.type === 'earth' && <Earth {...props} />}
+      {obj.type === 'sun' && <Sun {...props} />}
+      {obj.type === 'moon' && <Moon {...props} />}
+      {obj.type === 'star' && <Star {...props} />}
+      {obj.type === 'satellite' && <Satellite {...props} />}
+      {obj.type === 'rocket' && <Rocket {...props} />}
+      {obj.type === 'nebula' && <Nebula {...props} />}
+      
       {hovered && (
-        <pointLight position={[0, 0, 0]} intensity={2} color={obj.color} distance={5} />
+        <Text position={[obj.position[0], obj.position[1] + 2, obj.position[2]]} fontSize={0.6} color="#ffd700">
+          {obj.icon}
+        </Text>
       )}
     </group>
   );
 }
 
-function Scene({ onObjectClick }: { onObjectClick: (obj: InteractiveObject) => void }) {
-  const stars = Array.from({ length: 500 }, (_, i) => ({
-    position: [
-      (Math.random() - 0.5) * 100,
-      (Math.random() - 0.5) * 100,
-      (Math.random() - 0.5) * 100,
-    ] as [number, number, number],
-  }));
+function Stars() {
+  const starsGeometry = new THREE.BufferGeometry();
+  const starPositions = new Float32Array(1000 * 3);
+
+  for (let i = 0; i < 1000 * 3; i += 3) {
+    starPositions[i] = (Math.random() - 0.5) * 100;
+    starPositions[i + 1] = (Math.random() - 0.5) * 100;
+    starPositions[i + 2] = (Math.random() - 0.5) * 100;
+  }
+  starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
 
   return (
+    <points geometry={starsGeometry}>
+      <pointsMaterial size={0.05} color="#ffffff" transparent opacity={0.8} />
+    </points>
+  );
+}
+
+function SaturnRings({ position }: { position: [number, number, number] }) {
+  const ringRef = useRef<THREE.Mesh>(null);
+  
+  useFrame(() => {
+    if (ringRef.current) {
+      ringRef.current.rotation.z += 0.002;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh>
+        <sphereGeometry args={[0.8, 32, 32]} />
+        <meshStandardMaterial color="#f4a460" roughness={0.6} />
+      </mesh>
+      <Torus ref={ringRef} args={[1.2, 0.1, 16, 100]} rotation={[Math.PI / 2.5, 0, 0]}>
+        <meshStandardMaterial color="#daa520" transparent opacity={0.7} />
+      </Torus>
+    </group>
+  );
+}
+
+function Scene({ onObjectClick }: { onObjectClick: (obj: InteractiveObject) => void }) {
+  return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} color="#FFD700" />
+      <color attach="background" args={['#000000']} />
+      
+      <ambientLight intensity={0.2} />
+      <pointLight position={[8, 2, -5]} intensity={3} color="#ffd700" />
+      
+      <Stars />
+      <SaturnRings position={[6, -4, -8]} />
       
       {objects.map((obj) => (
-        <Planet key={obj.id} obj={obj} onClick={() => onObjectClick(obj)} />
+        <InteractiveObject key={obj.id} obj={obj} onClick={() => onObjectClick(obj)} />
       ))}
 
-      {stars.map((star, i) => (
-        <Star key={i} position={star.position} />
-      ))}
-
-      <Sphere args={[80, 32, 32]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#000000" side={THREE.BackSide} opacity={0.9} transparent />
-      </Sphere>
-
-      <OrbitControls enableZoom={true} enablePan={true} maxDistance={30} minDistance={5} />
+      <OrbitControls 
+        enableZoom={true} 
+        enablePan={true} 
+        maxDistance={20} 
+        minDistance={3}
+      />
     </>
   );
 }
@@ -135,7 +332,7 @@ export default function BiomeSpace({ onBack }: { onBack: () => void }) {
         Найдено: {foundObjects.size}/{objects.length}
       </div>
 
-      <Canvas camera={{ position: [0, 0, 15], fov: 75 }}>
+      <Canvas shadows camera={{ position: [0, 0, 12], fov: 75 }}>
         <Scene onObjectClick={handleObjectClick} />
       </Canvas>
 
@@ -151,7 +348,7 @@ export default function BiomeSpace({ onBack }: { onBack: () => void }) {
             <motion.div
               initial={{ y: 50 }}
               animate={{ y: 0 }}
-              className="bg-gradient-to-br from-purple-600 to-indigo-800 p-8 rounded-3xl max-w-lg mx-4 border-2 border-purple-400/50 shadow-2xl"
+              className="bg-gradient-to-br from-purple-600 to-pink-800 p-8 rounded-3xl max-w-lg mx-4 border-2 border-purple-400/50 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-6xl text-center mb-4">{selectedObject.icon}</div>
@@ -170,7 +367,7 @@ export default function BiomeSpace({ onBack }: { onBack: () => void }) {
       </AnimatePresence>
 
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white/70 text-center font-body text-sm">
-        <p>🖱️ Кликай на планеты • 🔄 Вращай мышкой • 🔍 Приближай колесиком</p>
+        <p>🖱️ Кликай на объекты • 🔄 Вращай мышкой • 🔍 Приближай колесиком</p>
       </div>
     </div>
   );
