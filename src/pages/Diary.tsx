@@ -11,74 +11,202 @@ function Mouse({ position }: { position: [number, number, number] }) {
   
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.05;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.08;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
   });
 
   return (
     <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.25, 0]}>
+      <mesh position={[0, 0.4, 0]} castShadow>
+        <sphereGeometry args={[0.25, 24, 24]} />
+        <meshStandardMaterial color="#9e9e9e" roughness={0.6} />
+      </mesh>
+      
+      <mesh position={[0, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.18, 0.5, 16, 32]} />
+        <meshStandardMaterial color="#b0b0b0" roughness={0.6} />
+      </mesh>
+      
+      <mesh position={[0, 0, 0.14]} scale={[0.85, 0.9, 0.8]}>
+        <capsuleGeometry args={[0.15, 0.4, 12, 24]} />
+        <meshStandardMaterial color="#f5f5f5" roughness={0.5} />
+      </mesh>
+      
+      <mesh position={[-0.16, 0.45, 0]} castShadow>
         <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial color="#8b8b8b" />
+        <meshStandardMaterial color="#ff69b4" roughness={0.4} />
       </mesh>
-      <mesh position={[0, 0, 0]}>
-        <capsuleGeometry args={[0.1, 0.3, 8, 16]} />
-        <meshStandardMaterial color="#a0a0a0" />
+      <mesh position={[0.16, 0.45, 0]} castShadow>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial color="#ff69b4" roughness={0.4} />
       </mesh>
-      <mesh position={[-0.08, 0.3, 0]}>
-        <sphereGeometry args={[0.06, 8, 8]} />
-        <meshStandardMaterial color="#ff69b4" />
-      </mesh>
-      <mesh position={[0.08, 0.3, 0]}>
-        <sphereGeometry args={[0.06, 8, 8]} />
-        <meshStandardMaterial color="#ff69b4" />
-      </mesh>
-      <mesh position={[0, 0.28, 0.08]}>
-        <sphereGeometry args={[0.02, 8, 8]} />
+      
+      <mesh position={[-0.08, 0.42, 0.18]} castShadow>
+        <sphereGeometry args={[0.06, 16, 16]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
-      <mesh position={[0, -0.2, 0]}>
-        <coneGeometry args={[0.08, 0.15, 16]} />
-        <meshStandardMaterial color="#a0a0a0" />
+      <mesh position={[0.08, 0.42, 0.18]} castShadow>
+        <sphereGeometry args={[0.06, 16, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      <mesh position={[0, 0.38, 0.22]} castShadow>
+        <sphereGeometry args={[0.04, 12, 12]} />
+        <meshStandardMaterial color="#ff1493" />
+      </mesh>
+      
+      <mesh position={[0, -0.32, 0]} rotation={[0, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.02, 0.6, 8, 16]} />
+        <meshStandardMaterial color="#e0e0e0" />
+      </mesh>
+      
+      <mesh position={[0.25, 0.05, 0]} rotation={[0, 0, -Math.PI * 0.15]} castShadow>
+        <capsuleGeometry args={[0.05, 0.25, 8, 16]} />
+        <meshStandardMaterial color="#b0b0b0" />
+      </mesh>
+      
+      <mesh position={[0, 0.18, 0]} castShadow>
+        <torusGeometry args={[0.08, 0.03, 8, 16]} />
+        <meshStandardMaterial color="#ff0000" roughness={0.3} metalness={0.4} />
       </mesh>
     </group>
   );
 }
 
-function Monkey({ position }: { position: [number, number, number] }) {
+function BabyMonkey({ position }: { position: [number, number, number] }) {
   const groupRef = useRef<THREE.Group>(null);
+  const armRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + 1) * 0.05;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2.5 + 1) * 0.12;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 2) * 0.15;
+    }
+    if (armRef.current) {
+      armRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 3) * 0.2;
     }
   });
 
   return (
     <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.35, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <sphereGeometry args={[0.28, 24, 24]} />
+        <meshStandardMaterial color="#8b4513" roughness={0.7} />
+      </mesh>
+      
+      <mesh position={[0, 0.5, 0.15]} scale={[0.8, 0.85, 0.7]}>
+        <sphereGeometry args={[0.22, 20, 20]} />
+        <meshStandardMaterial color="#d2691e" roughness={0.6} />
+      </mesh>
+      
+      <mesh position={[0, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.2, 0.6, 16, 32]} />
+        <meshStandardMaterial color="#a0522d" roughness={0.7} />
+      </mesh>
+      
+      <mesh position={[-0.14, 0.55, 0.18]} castShadow>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      <mesh position={[0.14, 0.55, 0.18]} castShadow>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      <mesh position={[0, 0.45, 0.24]} castShadow>
+        <sphereGeometry args={[0.05, 12, 12]} />
+        <meshStandardMaterial color="#3d2817" />
+      </mesh>
+      
+      <group ref={armRef}>
+        <mesh position={[-0.28, 0.15, 0]} rotation={[0, 0, Math.PI * 0.5]} castShadow>
+          <capsuleGeometry args={[0.06, 0.35, 8, 16]} />
+          <meshStandardMaterial color="#a0522d" />
+        </mesh>
+      </group>
+      
+      <mesh position={[0.28, 0.15, 0]} rotation={[0, 0, -Math.PI * 0.5]} castShadow>
+        <capsuleGeometry args={[0.06, 0.35, 8, 16]} />
+        <meshStandardMaterial color="#a0522d" />
+      </mesh>
+      
+      <mesh position={[0, -0.5, 0.3]} rotation={[Math.PI * 0.5, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.03, 0.7, 8, 16]} />
         <meshStandardMaterial color="#8b4513" />
       </mesh>
-      <mesh position={[0, 0.05, 0]}>
-        <capsuleGeometry args={[0.12, 0.35, 8, 16]} />
-        <meshStandardMaterial color="#a0522d" />
+      
+      <mesh position={[0, 0.6, 0]}>
+        <sphereGeometry args={[0.06, 12, 12]} />
+        <meshStandardMaterial color="#8b4513" />
       </mesh>
-      <mesh position={[-0.1, 0.4, 0.08]}>
-        <sphereGeometry args={[0.04, 8, 8]} />
+    </group>
+  );
+}
+
+function AdultMonkey({ position }: { position: [number, number, number] }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5 + 2) * 0.06;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1) * 0.08;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh position={[0, 0.6, 0]} castShadow>
+        <sphereGeometry args={[0.32, 24, 24]} />
+        <meshStandardMaterial color="#3d2817" roughness={0.75} />
+      </mesh>
+      
+      <mesh position={[0, 0.6, 0.17]} scale={[0.85, 0.9, 0.75]}>
+        <sphereGeometry args={[0.26, 20, 20]} />
+        <meshStandardMaterial color="#8b4513" roughness={0.65} />
+      </mesh>
+      
+      <mesh position={[0, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.28, 0.8, 16, 32]} />
+        <meshStandardMaterial color="#654321" roughness={0.75} />
+      </mesh>
+      
+      <mesh position={[-0.16, 0.66, 0.2]} castShadow>
+        <sphereGeometry args={[0.09, 16, 16]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
-      <mesh position={[0.1, 0.4, 0.08]}>
-        <sphereGeometry args={[0.04, 8, 8]} />
+      <mesh position={[0.16, 0.66, 0.2]} castShadow>
+        <sphereGeometry args={[0.09, 16, 16]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
-      <mesh position={[-0.15, 0.1, 0]} rotation={[0, 0, Math.PI * 0.3]}>
-        <capsuleGeometry args={[0.04, 0.2, 6, 12]} />
-        <meshStandardMaterial color="#a0522d" />
+      
+      <mesh position={[0, 0.56, 0.28]} castShadow>
+        <sphereGeometry args={[0.06, 12, 12]} />
+        <meshStandardMaterial color="#2d1810" />
       </mesh>
-      <mesh position={[0.15, 0.1, 0]} rotation={[0, 0, -Math.PI * 0.3]}>
-        <capsuleGeometry args={[0.04, 0.2, 6, 12]} />
-        <meshStandardMaterial color="#a0522d" />
+      
+      <mesh position={[-0.38, 0.2, 0]} rotation={[0, 0, Math.PI * 0.4]} castShadow>
+        <capsuleGeometry args={[0.08, 0.5, 8, 16]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      
+      <mesh position={[0.38, 0.2, 0]} rotation={[0, 0, -Math.PI * 0.4]} castShadow>
+        <capsuleGeometry args={[0.08, 0.5, 8, 16]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      
+      <mesh position={[-0.15, -0.5, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.3, 8, 16]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      <mesh position={[0.15, -0.5, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.3, 8, 16]} />
+        <meshStandardMaterial color="#654321" />
+      </mesh>
+      
+      <mesh position={[-0.25, 0.1, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[0.06, 0.02, 8, 16]} />
+        <meshStandardMaterial color="#ffd700" metalness={0.8} roughness={0.2} />
       </mesh>
     </group>
   );
@@ -86,120 +214,204 @@ function Monkey({ position }: { position: [number, number, number] }) {
 
 function Dragon({ position }: { position: [number, number, number] }) {
   const groupRef = useRef<THREE.Group>(null);
+  const wingsRef = useRef<THREE.Group>(null);
+  const tailRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + 2) * 0.05;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.8 + 3) * 0.1;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.2) * 0.12;
+    }
+    if (wingsRef.current) {
+      wingsRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 4) * 0.3;
+    }
+    if (tailRef.current) {
+      tailRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 2) * 0.4;
     }
   });
 
   return (
     <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.25, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color="#dc143c" />
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <sphereGeometry args={[0.3, 24, 24]} />
+        <meshStandardMaterial color="#2e7d32" roughness={0.5} />
       </mesh>
-      <mesh position={[0, 0, 0]}>
-        <capsuleGeometry args={[0.1, 0.4, 8, 16]} />
-        <meshStandardMaterial color="#ff4500" />
+      
+      <mesh position={[0, 0, 0]} castShadow>
+        <capsuleGeometry args={[0.25, 0.7, 16, 32]} />
+        <meshStandardMaterial color="#43a047" roughness={0.5} />
       </mesh>
-      <mesh position={[0, 0.3, 0.1]}>
-        <coneGeometry args={[0.05, 0.12, 8]} />
+      
+      <mesh position={[0, 0, 0.16]} scale={[0.8, 0.85, 0.7]}>
+        <capsuleGeometry args={[0.2, 0.55, 12, 24]} />
+        <meshStandardMaterial color="#00bcd4" roughness={0.4} />
+      </mesh>
+      
+      <mesh position={[-0.14, 0.56, 0.2]} castShadow>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      <mesh position={[0.14, 0.56, 0.2]} castShadow>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      <mesh position={[0, 0.5, 0.26]} castShadow>
+        <coneGeometry args={[0.08, 0.18, 8]} />
+        <meshStandardMaterial color="#ffd700" roughness={0.4} />
+      </mesh>
+      
+      <mesh position={[-0.12, 0.65, 0]} castShadow>
+        <coneGeometry args={[0.06, 0.15, 6]} />
+        <meshStandardMaterial color="#ffd700" roughness={0.3} />
+      </mesh>
+      <mesh position={[0.12, 0.65, 0]} castShadow>
+        <coneGeometry args={[0.06, 0.15, 6]} />
+        <meshStandardMaterial color="#ffd700" roughness={0.3} />
+      </mesh>
+      
+      <group ref={wingsRef}>
+        <mesh position={[-0.3, 0.35, -0.1]} rotation={[0, Math.PI * 0.3, Math.PI * 0.5]} castShadow>
+          <coneGeometry args={[0.25, 0.4, 4]} />
+          <meshStandardMaterial 
+            color="#2e7d32" 
+            emissive="#1b5e20" 
+            emissiveIntensity={0.3}
+            transparent
+            opacity={0.9}
+          />
+        </mesh>
+      </group>
+      
+      <mesh position={[0.3, 0.35, -0.1]} rotation={[0, -Math.PI * 0.3, -Math.PI * 0.5]} castShadow>
+        <coneGeometry args={[0.25, 0.4, 4]} />
+        <meshStandardMaterial 
+          color="#2e7d32" 
+          emissive="#1b5e20" 
+          emissiveIntensity={0.3}
+          transparent
+          opacity={0.9}
+        />
+      </mesh>
+      
+      <mesh 
+        ref={tailRef}
+        position={[0, -0.5, -0.2]} 
+        rotation={[Math.PI * 0.4, 0, 0]} 
+        castShadow
+      >
+        <capsuleGeometry args={[0.06, 0.6, 8, 16]} />
+        <meshStandardMaterial color="#2e7d32" />
+      </mesh>
+      
+      <mesh position={[0, -0.8, -0.4]} castShadow>
+        <coneGeometry args={[0.1, 0.2, 4]} />
         <meshStandardMaterial color="#ffd700" />
       </mesh>
-      <mesh position={[-0.18, 0.25, 0]} rotation={[0, 0, Math.PI * 0.5]}>
-        <coneGeometry args={[0.12, 0.2, 4]} />
-        <meshStandardMaterial color="#dc143c" emissive="#dc143c" emissiveIntensity={0.3} />
-      </mesh>
-      <mesh position={[0.18, 0.25, 0]} rotation={[0, 0, -Math.PI * 0.5]}>
-        <coneGeometry args={[0.12, 0.2, 4]} />
-        <meshStandardMaterial color="#dc143c" emissive="#dc143c" emissiveIntensity={0.3} />
-      </mesh>
-      <mesh position={[0, -0.25, 0]}>
-        <coneGeometry args={[0.06, 0.25, 8]} />
-        <meshStandardMaterial color="#ff4500" />
-      </mesh>
+      
       {[0, 1, 2, 3].map((i) => (
-        <mesh key={i} position={[0, 0.35 - i * 0.08, -0.1]} rotation={[Math.PI * 0.5, 0, 0]}>
-          <coneGeometry args={[0.03, 0.08, 4]} />
+        <mesh 
+          key={i} 
+          position={[0, 0.7 - i * 0.12, -0.15]} 
+          rotation={[Math.PI * 0.5, 0, 0]}
+          castShadow
+        >
+          <coneGeometry args={[0.05, 0.15, 4]} />
           <meshStandardMaterial color="#ffd700" />
         </mesh>
       ))}
+      
+      <mesh position={[-0.35, 0.1, 0]} rotation={[0, 0, Math.PI * 0.5]} castShadow>
+        <capsuleGeometry args={[0.07, 0.4, 8, 16]} />
+        <meshStandardMaterial color="#43a047" />
+      </mesh>
+      
+      <mesh position={[-0.15, -0.5, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.25, 8, 16]} />
+        <meshStandardMaterial color="#43a047" />
+      </mesh>
+      <mesh position={[0.15, -0.5, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.25, 8, 16]} />
+        <meshStandardMaterial color="#43a047" />
+      </mesh>
     </group>
   );
 }
 
-function Tiger({ position }: { position: [number, number, number] }) {
-  const groupRef = useRef<THREE.Group>(null);
+function HandConnection({ start, end }: { start: [number, number, number]; end: [number, number, number] }) {
+  const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + 3) * 0.05;
+    if (meshRef.current) {
+      const time = state.clock.elapsedTime;
+      meshRef.current.position.y = (start[1] + end[1]) / 2 + Math.sin(time * 2) * 0.05;
     }
   });
 
+  const midpoint: [number, number, number] = [
+    (start[0] + end[0]) / 2,
+    (start[1] + end[1]) / 2,
+    (start[2] + end[2]) / 2,
+  ];
+  
+  const distance = Math.sqrt(
+    Math.pow(end[0] - start[0], 2) + 
+    Math.pow(end[1] - start[1], 2) + 
+    Math.pow(end[2] - start[2], 2)
+  );
+  
+  const angle = Math.atan2(end[2] - start[2], end[0] - start[0]);
+
   return (
-    <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.25, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color="#ff8c00" />
-      </mesh>
-      <mesh position={[0, 0, 0]}>
-        <capsuleGeometry args={[0.12, 0.35, 8, 16]} />
-        <meshStandardMaterial color="#ffa500" />
-      </mesh>
-      <mesh position={[-0.1, 0.28, 0.08]}>
-        <sphereGeometry args={[0.04, 8, 8]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
-      <mesh position={[0.1, 0.28, 0.08]}>
-        <sphereGeometry args={[0.04, 8, 8]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
-      <mesh position={[-0.12, 0.35, 0]}>
-        <coneGeometry args={[0.04, 0.08, 4]} />
-        <meshStandardMaterial color="#ff8c00" />
-      </mesh>
-      <mesh position={[0.12, 0.35, 0]}>
-        <coneGeometry args={[0.04, 0.08, 4]} />
-        <meshStandardMaterial color="#ff8c00" />
-      </mesh>
-      <mesh position={[-0.15, 0.05, 0]} rotation={[0, 0, Math.PI * 0.3]}>
-        <capsuleGeometry args={[0.04, 0.15, 6, 12]} />
-        <meshStandardMaterial color="#ffa500" />
-      </mesh>
-      <mesh position={[0.15, 0.05, 0]} rotation={[0, 0, -Math.PI * 0.3]}>
-        <capsuleGeometry args={[0.04, 0.15, 6, 12]} />
-        <meshStandardMaterial color="#ffa500" />
-      </mesh>
-    </group>
+    <mesh 
+      ref={meshRef}
+      position={midpoint} 
+      rotation={[0, 0, angle]}
+    >
+      <capsuleGeometry args={[0.02, distance - 0.4, 6, 12]} />
+      <meshStandardMaterial color="#ffffff" transparent opacity={0.3} />
+    </mesh>
   );
 }
 
 function CharactersScene() {
   return (
     <>
-      <color attach="background" args={['#1a1a2e']} />
-      <ambientLight intensity={0.6} />
-      <pointLight position={[5, 5, 5]} intensity={1} />
-      <pointLight position={[-5, 3, -3]} intensity={0.5} color="#8B5CF6" />
+      <color attach="background" args={['#0f0a1e']} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[5, 5, 5]} intensity={1.5} />
+      <pointLight position={[-5, 3, 3]} intensity={0.8} color="#8B5CF6" />
+      <pointLight position={[0, -2, 5]} intensity={0.5} color="#00bcd4" />
+      <directionalLight 
+        position={[3, 8, 4]} 
+        intensity={1} 
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
       
-      <Mouse position={[-1.2, 0, 0]} />
-      <Monkey position={[-0.4, 0, 0]} />
-      <Tiger position={[0.4, 0, 0]} />
-      <Dragon position={[1.2, 0, 0]} />
+      <Mouse position={[-1.8, 0, 0]} />
+      <BabyMonkey position={[-0.6, 0, 0]} />
+      <AdultMonkey position={[0.6, 0, 0]} />
+      <Dragon position={[1.8, 0, 0]} />
       
-      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[10, 10]} />
-        <meshStandardMaterial color="#0f0f1e" transparent opacity={0.5} />
+      <HandConnection start={[-1.8, 0.05, 0]} end={[-0.6, 0.15, 0]} />
+      <HandConnection start={[-0.6, 0.15, 0]} end={[0.6, 0.2, 0]} />
+      <HandConnection start={[0.6, 0.2, 0]} end={[1.8, 0.1, 0]} />
+      
+      <mesh position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[15, 15]} />
+        <meshStandardMaterial color="#1a1a2e" transparent opacity={0.6} />
       </mesh>
 
       <OrbitControls 
         enableZoom={true} 
         enablePan={false} 
-        maxDistance={4} 
-        minDistance={1.5}
+        maxDistance={6} 
+        minDistance={2}
         maxPolarAngle={Math.PI / 2}
+        autoRotate
+        autoRotateSpeed={0.5}
       />
     </>
   );
@@ -280,31 +492,38 @@ export default function Diary() {
 
           <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-cyan-blue/20">
             <p className="text-center text-cyan-blue font-body mb-4 text-sm">
-              🖱️ Вращай мышкой • 🔍 Приближай колесиком
+              🖱️ Вращай мышкой • 🔍 Приближай колесиком • ✨ Автоповорот включен
             </p>
-            <div className="w-full h-64 rounded-xl overflow-hidden">
-              <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+            <div className="w-full h-96 rounded-xl overflow-hidden bg-gradient-to-b from-deep-purple/50 to-space-black/80">
+              <Canvas shadows camera={{ position: [0, 1, 5], fov: 50 }}>
                 <CharactersScene />
               </Canvas>
             </div>
-            <div className="mt-4 flex justify-center gap-4 text-center">
-              <div className="flex-1">
-                <div className="text-2xl mb-1">🐭</div>
-                <p className="text-white/70 text-xs font-body">Мышка</p>
+            <div className="mt-6 grid grid-cols-4 gap-2 text-center">
+              <div className="bg-white/5 rounded-lg p-3 border border-pink-500/30">
+                <div className="text-3xl mb-2">🐭</div>
+                <p className="text-white/90 text-sm font-body font-bold">Мышка</p>
+                <p className="text-white/60 text-xs font-body mt-1">2008 год</p>
               </div>
-              <div className="flex-1">
-                <div className="text-2xl mb-1">🐵</div>
-                <p className="text-white/70 text-xs font-body">Обезьянка</p>
+              <div className="bg-white/5 rounded-lg p-3 border border-orange-500/30">
+                <div className="text-3xl mb-2">🐵</div>
+                <p className="text-white/90 text-sm font-body font-bold">Обезьянка</p>
+                <p className="text-white/60 text-xs font-body mt-1">2016 год</p>
               </div>
-              <div className="flex-1">
-                <div className="text-2xl mb-1">🐯</div>
-                <p className="text-white/70 text-xs font-body">Тигр</p>
+              <div className="bg-white/5 rounded-lg p-3 border border-amber-600/30">
+                <div className="text-3xl mb-2">🦍</div>
+                <p className="text-white/90 text-sm font-body font-bold">Обезьяна</p>
+                <p className="text-white/60 text-xs font-body mt-1">2004 год</p>
               </div>
-              <div className="flex-1">
-                <div className="text-2xl mb-1">🐉</div>
-                <p className="text-white/70 text-xs font-body">Дракон</p>
+              <div className="bg-white/5 rounded-lg p-3 border border-green-500/30">
+                <div className="text-3xl mb-2">🐉</div>
+                <p className="text-white/90 text-sm font-body font-bold">Дракон</p>
+                <p className="text-white/60 text-xs font-body mt-1">2024 год</p>
               </div>
             </div>
+            <p className="text-center text-white/50 text-xs font-body mt-4 italic">
+              Четыре года, четыре персонажа - символы нашей семьи 💫
+            </p>
           </div>
         </motion.div>
       </div>
